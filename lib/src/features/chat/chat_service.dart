@@ -3,19 +3,23 @@ import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:chat_proto/chat_proto.dart';
-import 'package:chat_proto/generated/update_status.pbenum.dart';
+import 'package:chat_proto/generated/update_status.pb.dart';
+import 'package:chat_server/objectbox.g.dart';
+import 'package:chat_server/src/cache/models/models.dart';
+import 'package:chat_server/src/cache/services/channels_repo.dart';
+import 'package:chat_server/src/cache/services/messages_repo.dart';
 import 'package:uuid/uuid.dart';
 
 class ChatService extends ChatServiceBase {
   final Store store;
-  final ChannelCacheRepo chatRepo;
-  final MessageCacheRepo messageRepo;
+  final ChannelsRepo chatRepo;
+  final MessagesRepo messageRepo;
   final StreamController<ChatMessage> _messageUpdatesStreamController =
       StreamController<ChatMessage>.broadcast();
 
   ChatService(this.store)
-      : chatRepo = ChannelCacheRepo(store),
-        messageRepo = MessageCacheRepo(store);
+      : chatRepo = ChannelsRepo(store),
+        messageRepo = MessagesRepo(store);
 
   clearAllData() async {
     await chatRepo.removeAll();
@@ -31,7 +35,7 @@ class ChatService extends ChatServiceBase {
       ..channelId = request.channelId.isEmpty ? Uuid().v4() : request.channelId;
     final Uint8List data = channel.writeToBuffer();
     final int timestamp = DateTime.now().millisecondsSinceEpoch;
-    final cachedChannel = CachedChannel(
+    final cachedChannel = ChannelLocalRecord(
       channel.channelId,
       data,
       timestamp,
@@ -67,7 +71,7 @@ class ChatService extends ChatServiceBase {
 
       // prepare cached message
       final Uint8List data = message.writeToBuffer();
-      final cachedMessage = CachedMessage(
+      final cachedMessage = MessagelocalRecord(
         request.channelId,
         data,
         DateTime.now().millisecondsSinceEpoch,

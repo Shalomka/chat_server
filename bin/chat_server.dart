@@ -1,8 +1,9 @@
 import 'package:chat_proto/chat_proto.dart';
-import 'package:chat_proto/objectbox.g.dart';
 import 'package:chat_server/chat_server.dart';
 
 import 'dart:async';
+
+import 'package:chat_server/objectbox.g.dart';
 
 void main(List<String> arguments) async {
   final int port = 8080;
@@ -13,13 +14,13 @@ void main(List<String> arguments) async {
 
   // await db.connect();
 
+  final chatService = ChatService(store);
+
   ///
   /// Services
   ///
   final services = [
-    // UserService(db),
-    // FarmService(db),
-    ChatService(store),
+    chatService,
   ];
 
   ///
