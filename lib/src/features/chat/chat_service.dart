@@ -5,9 +5,9 @@ import 'dart:typed_data';
 import 'package:chat_proto/chat_proto.dart';
 import 'package:chat_proto/generated/update_status.pb.dart';
 import 'package:chat_server/objectbox.g.dart';
-import 'package:chat_server/src/cache/models/models.dart';
-import 'package:chat_server/src/cache/services/channels_repo.dart';
-import 'package:chat_server/src/cache/services/messages_repo.dart';
+import 'package:chat_server/src/features/local_storage/models/models.dart';
+import 'package:chat_server/src/features/local_storage/services/channels_repo.dart';
+import 'package:chat_server/src/features/local_storage/services/messages_repo.dart';
 import 'package:uuid/uuid.dart';
 
 class ChatService extends ChatServiceBase {

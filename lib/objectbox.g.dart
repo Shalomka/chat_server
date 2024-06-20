@@ -13,7 +13,7 @@ import 'package:objectbox/internal.dart'
     as obx_int; // generated code can access "internal" functionality
 import 'package:objectbox/objectbox.dart' as obx;
 
-import 'src/cache/models/models.dart';
+import 'src/features/local_storage/models/models.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 

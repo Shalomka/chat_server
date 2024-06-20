@@ -1,6 +1,6 @@
 import 'package:chat_server/objectbox.g.dart';
-import 'package:chat_server/src/cache/models/models.dart';
-import 'package:chat_server/src/cache/services/local_data_repo.dart';
+import 'package:chat_server/src/features/local_storage/models/models.dart';
+import 'package:chat_server/src/features/local_storage/services/local_data_repo.dart';
 
 class MessagesRepo extends LocalDataRepo<MessagelocalRecord> {
   MessagesRepo(super.store);

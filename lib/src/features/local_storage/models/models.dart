@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:objectbox/objectbox.dart';
 
-import '../../../objectbox.g.dart';
+import '../../../../objectbox.g.dart';
 
 abstract class LocalData {
   int? id;
