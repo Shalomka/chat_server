@@ -36,9 +36,9 @@ class ChatService extends ChatServiceBase {
     final Uint8List data = channel.writeToBuffer();
     final int timestamp = DateTime.now().millisecondsSinceEpoch;
     final cachedChannel = ChannelLocalRecord(
-      channel.channelId,
-      data,
-      timestamp,
+      channelId: channel.channelId,
+      data: data,
+      timestamp: timestamp,
     );
 
     await chatRepo.put(cachedChannel);
@@ -72,9 +72,9 @@ class ChatService extends ChatServiceBase {
       // prepare cached message
       final Uint8List data = message.writeToBuffer();
       final cachedMessage = MessagelocalRecord(
-        request.channelId,
-        data,
-        DateTime.now().millisecondsSinceEpoch,
+        channelId: request.channelId,
+        data: data,
+        timestamp: DateTime.now().millisecondsSinceEpoch,
       );
       // save message to cache
       await messageRepo.put(cachedMessage);

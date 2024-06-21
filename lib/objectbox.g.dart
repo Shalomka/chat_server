@@ -161,16 +161,18 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final channelIdOffset = fbb.writeString(object.channelId);
           final dataOffset = fbb.writeListInt8(object.data);
           fbb.startTable(5);
-          fbb.addInt64(0, object.id ?? 0);
+          fbb.addInt64(0, object.id);
           fbb.addOffset(1, channelIdOffset);
           fbb.addInt64(2, object.timestamp);
           fbb.addOffset(3, dataOffset);
           fbb.finish(fbb.endTable());
-          return object.id ?? 0;
+          return object.id;
         },
         objectFromFB: (obx.Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
           final channelIdParam = const fb.StringReader(asciiOptimization: true)
               .vTableGet(buffer, rootOffset, 6, '');
           final dataParam = const fb.Uint8ListReader(lazy: false)
@@ -178,9 +180,10 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final timestampParam =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0);
           final object = ChannelLocalRecord(
-              channelIdParam, dataParam, timestampParam)
-            ..id =
-                const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 4);
+              id: idParam,
+              channelId: channelIdParam,
+              data: dataParam,
+              timestamp: timestampParam);
 
           return object;
         }),
@@ -196,16 +199,18 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final channelIdOffset = fbb.writeString(object.channelId);
           final dataOffset = fbb.writeListInt8(object.data);
           fbb.startTable(5);
-          fbb.addInt64(0, object.id ?? 0);
+          fbb.addInt64(0, object.id);
           fbb.addOffset(1, channelIdOffset);
           fbb.addInt64(2, object.timestamp);
           fbb.addOffset(3, dataOffset);
           fbb.finish(fbb.endTable());
-          return object.id ?? 0;
+          return object.id;
         },
         objectFromFB: (obx.Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
           final channelIdParam = const fb.StringReader(asciiOptimization: true)
               .vTableGet(buffer, rootOffset, 6, '');
           final dataParam = const fb.Uint8ListReader(lazy: false)
@@ -213,9 +218,10 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final timestampParam =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0);
           final object = MessagelocalRecord(
-              channelIdParam, dataParam, timestampParam)
-            ..id =
-                const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 4);
+              id: idParam,
+              channelId: channelIdParam,
+              data: dataParam,
+              timestamp: timestampParam);
 
           return object;
         })
