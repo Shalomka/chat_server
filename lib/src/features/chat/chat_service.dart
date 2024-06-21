@@ -8,7 +8,6 @@ import 'package:chat_server/objectbox.g.dart';
 import 'package:chat_server/src/features/local_storage/models/models.dart';
 import 'package:chat_server/src/features/local_storage/services/channels_repo.dart';
 import 'package:chat_server/src/features/local_storage/services/messages_repo.dart';
-import 'package:uuid/uuid.dart';
 
 class ChatService extends ChatServiceBase {
   final Store store;
@@ -28,11 +27,9 @@ class ChatService extends ChatServiceBase {
   }
 
   @override
-  Future<CreateChannelResponse> createChannel(
-      ServiceCall call, CreateChannelRequest request) async {
-    final channel = Channel()
-      ..name = request.name
-      ..channelId = request.channelId.isEmpty ? Uuid().v4() : request.channelId;
+  Future<CallStatusResponse> createChannel(
+      ServiceCall call, ChatChannel request) async {
+    final channel = request;
     final Uint8List data = channel.writeToBuffer();
     final int timestamp = DateTime.now().millisecondsSinceEpoch;
     final cachedChannel = ChannelLocalRecord(
@@ -42,7 +39,7 @@ class ChatService extends ChatServiceBase {
     );
 
     await chatRepo.put(cachedChannel);
-    return CreateChannelResponse();
+    return CallStatusResponse();
   }
 
   @override
@@ -50,29 +47,23 @@ class ChatService extends ChatServiceBase {
       ServiceCall call, ListChannelsRequest request) async {
     final channels = await chatRepo.getAll();
     final response = ListChannelsResponse();
-    response.channels.addAll(channels.map((e) => Channel.fromBuffer(e.data)));
+    response.channels
+        .addAll(channels.map((e) => ChatChannel.fromBuffer(e.data)));
     return response;
   }
 
   @override
-  Future<SendMessageResponse> sendMessage(
-      ServiceCall call, SendMessageRequest request) async {
+  Future<CallStatusResponse> sendMessage(
+      ServiceCall call, ChatMessage request) async {
+    final message = request;
     final accepted = UpdateStatus.ACCEPTED;
     final rejected = UpdateStatus.REJECTED;
 
     try {
-      // prepare message
-      final message = ChatMessage()
-        ..messageId = Uuid().v4()
-        ..channelId = request.channelId
-        ..text = request.text
-        ..timestamp = Timestamp()
-        ..status = accepted;
-
       // prepare cached message
       final Uint8List data = message.writeToBuffer();
       final cachedMessage = MessagelocalRecord(
-        channelId: request.channelId,
+        channelId: message.channelId,
         data: data,
         timestamp: DateTime.now().millisecondsSinceEpoch,
       );
@@ -83,10 +74,14 @@ class ChatService extends ChatServiceBase {
     } on Exception catch (e) {
       log('Error sending message: $e');
       // return rejected status
-      final response = SendMessageResponse()..status = rejected;
+      final response = CallStatusResponse()
+        ..status = rejected
+        ..message = e.toString();
       return response;
     }
-    final response = SendMessageResponse()..status = accepted;
+    final response = CallStatusResponse()
+      ..status = accepted
+      ..message = 'ok';
     return Future.value(response);
   }
 

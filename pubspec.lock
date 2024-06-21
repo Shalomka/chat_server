@@ -123,10 +123,10 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "690e5442b2f479a9632bd49e1eb9bfef5d692231"
+      resolved-ref: "7f8708b92f1b14bd6992cad769eb9585e76fad6a"
       url: "https://github.com/Shalomka/chat_proto"
     source: git
-    version: "0.0.7"
+    version: "0.0.9"
   checked_yaml:
     dependency: transitive
     description:
